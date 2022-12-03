@@ -186,14 +186,14 @@ public class LeasingCost {
         String m = description.substring(initialMonth+8);
         String month = m.substring(0,m.indexOf(";"));
         int monthly = Integer.parseInt(month);
-      //getting miles/unit
-        int initialMPU = description.indexOf("miles/unit:");
+      //getting mile/unit
+        int initialMPU = description.indexOf("mile/unit:");
         String mpu = description.substring(initialMPU+11);
         String milesPerUnit = mpu.substring(0,mpu.indexOf(";"));
         double mileUsage = Double.parseDouble(milesPerUnit);
       //getting allowance
         int initialAllowance = description.indexOf("allowance:");
-        String a = description.substring(initialAllowance+9);
+        String a = description.substring(initialAllowance+10);
         String allowance = a.substring(0,a.indexOf(";"));
         int mileageAllowance = Integer.parseInt(allowance);
       // return charger if vehicle is electronic
