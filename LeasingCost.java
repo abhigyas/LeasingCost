@@ -163,14 +163,20 @@ public class LeasingCost {
      *      the last step is just to convert the datatype based on what type of data we are extracting
      */
 	public static Vehicle createVehicle(String description){
-       //getting name
+       Fuel fuel;
+       double charger = 0.0;
+
+        //getting name
         int initialName = description.indexOf("name:");
         String n = description.substring(initialName+5);
         String name = n.substring(0,n.indexOf(";"));
-      //getting type
-        int initialType = description.indexOf("type:");
-        String t = description.substring(initialType+5);
-        String type = t.substring(0,t.indexOf(";"));
+      //getting charger cost
+      if (description.indexOf("charger:")!= -1) {
+        int initialCharge = description.indexOf("charger:");
+        String c = description.substring(initialCharge+8);
+        String charge = c.substring(0,c.indexOf(";"));
+        charger = Double.parseDouble(charge);
+        }
       //getting due
          int initialDues = description.indexOf("due:");
         String d = description.substring(initialDues+4);
@@ -186,9 +192,9 @@ public class LeasingCost {
         String m = description.substring(initialMonth+8);
         String month = m.substring(0,m.indexOf(";"));
         int monthly = Integer.parseInt(month);
-      //getting mile/unit
+      //getting miles/unit
         int initialMPU = description.indexOf("mile/unit:");
-        String mpu = description.substring(initialMPU+11);
+        String mpu = description.substring(initialMPU+10);
         String milesPerUnit = mpu.substring(0,mpu.indexOf(";"));
         double mileUsage = Double.parseDouble(milesPerUnit);
       //getting allowance
@@ -196,17 +202,16 @@ public class LeasingCost {
         String a = description.substring(initialAllowance+10);
         String allowance = a.substring(0,a.indexOf(";"));
         int mileageAllowance = Integer.parseInt(allowance);
-      // return charger if vehicle is electronic
-        if (type.equals("electronic")) {
-            int initialCharge = description.indexOf("charger:");
-            String c = description.substring(initialCharge+8);
-            String charge = c.substring(0,c.indexOf(";"));
-            double charger = Double.parseDouble(charge);
-            return new Vehicle(name, new Fuel(mileUsage,charger), new Lease(dueAtSigning, leaseLength, monthly, mileageAllowance));
+      // checking car type
+        if (description.indexOf("charger:") == -1) {
+            fuel = new Fuel(mileUsage);
             }
+        else{
+            fuel = new Fuel(mileUsage,charger);
+        }
       //return vehicle
-        return new Vehicle(name, new Fuel(mileUsage), new Lease(dueAtSigning,leaseLength,monthly,mileageAllowance));
-
+      Lease lease = new Lease(dueAtSigning,leaseLength,monthly,mileageAllowance);
+        return new Vehicle(name, fuel, lease);
 	}
 
     /* 
